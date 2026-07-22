@@ -1,0 +1,19 @@
+{
+  "name": "secureloop-platform",
+  "version": "1.0.0",
+  "description": "SecureLoop Full-Lifecycle Security Engineering Platform",
+  "private": true,
+  "scripts": {
+    "start:app": "npm --prefix apps/target-app start",
+    "dev:app": "npm --prefix apps/target-app run dev",
+    "build:app": "npm --prefix apps/target-app run build",
+    "test:app": "npm --prefix apps/target-app test",
+    "run:shift-left": "bash pillar-1-shift-left/run-shift-left.sh",
+    "run:detector": "python3 pillar-2-shift-right/detection-engine/detector.py",
+    "run:attack": "python3 tools/adversary-emulation/attack_cli.py",
+    "run:feedback": "python3 feedback-loop/synthesizer.py",
+    "start:dashboard": "python3 -m http.server 3000 --directory dashboard"
+  },
+  "devDependencies": {},
+  "dependencies": {}
+}

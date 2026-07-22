@@ -1,0 +1,19 @@
+title = "SecureLoop Gitleaks Custom Secret Rules"
+
+[[rules]]
+id = "secureloop-api-key"
+description = "SecureLoop Live API Key secret detected"
+regex = '''sl_live_[a-zA-Z0-9_]{16,32}'''
+keywords = ["sl_live_"]
+
+[[rules]]
+id = "aws-access-key-id"
+description = "AWS Access Key ID"
+regex = '''(A3T[A-Z0-9]|AKIA|AGPA|AIDA|AROA|AIPA|ANPA|ANVA|ASIA)[A-Z0-9]{16}'''
+keywords = ["AKIA", "AGPA", "AIDA", "AROA"]
+
+[[rules]]
+id = "generic-api-key"
+description = "Generic High-Entropy API Key"
+regex = '''(?i)(api_key|secret|password|auth_token)\s*[:=]\s*["'][A-Za-z0-9_!@#$%^&*()-+=]{16,}["']'''
+keywords = ["secret", "password", "api_key"]

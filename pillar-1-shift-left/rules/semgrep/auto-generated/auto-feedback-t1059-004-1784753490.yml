@@ -1,0 +1,15 @@
+rules:
+- id: auto-feedback-t1059-004-1784753490
+  languages:
+  - typescript
+  - javascript
+  message: 'AUTO-FEEDBACK-RULE: Closed loop rule generated from production alert T1059.004:
+    OS Command Chaining payload detected in export endpoint: txt; id'
+  metadata:
+    generated_by: SecureLoop Closed Feedback Synthesizer
+    mitre: T1059.004
+  patterns:
+  - pattern-either:
+    - pattern: $REQ.query
+    - pattern: $REQ.body
+  severity: ERROR

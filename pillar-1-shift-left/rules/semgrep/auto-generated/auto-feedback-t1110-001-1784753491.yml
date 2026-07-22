@@ -1,0 +1,15 @@
+rules:
+- id: auto-feedback-t1110-001-1784753491
+  languages:
+  - typescript
+  - javascript
+  message: 'AUTO-FEEDBACK-RULE: Closed loop rule generated from production alert T1110.001:
+    High frequency authentication failures: 4 attempts in 60s from ::1'
+  metadata:
+    generated_by: SecureLoop Closed Feedback Synthesizer
+    mitre: T1110.001
+  patterns:
+  - pattern-either:
+    - pattern: $REQ.query
+    - pattern: $REQ.body
+  severity: ERROR

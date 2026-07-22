@@ -1,0 +1,14 @@
+id: dast-auto-t1110-001-1784753494
+info:
+  name: Auto-Generated DAST Rule for T1110.001
+  author: SecureLoop Closed Feedback Synthesizer
+  severity: high
+
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}/api/auth/login"
+    matchers:
+      - type: status
+        status:
+          - 200

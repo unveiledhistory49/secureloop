@@ -1,0 +1,15 @@
+rules:
+- id: auto-feedback-t1078-003-1784753496
+  languages:
+  - typescript
+  - javascript
+  message: 'AUTO-FEEDBACK-RULE: Closed loop rule generated from production alert T1078.003:
+    VULNERABLE MODE: Accepted JWT with alg=none for user attacker'
+  metadata:
+    generated_by: SecureLoop Closed Feedback Synthesizer
+    mitre: T1078.003
+  patterns:
+  - pattern-either:
+    - pattern: $REQ.query
+    - pattern: $REQ.body
+  severity: ERROR

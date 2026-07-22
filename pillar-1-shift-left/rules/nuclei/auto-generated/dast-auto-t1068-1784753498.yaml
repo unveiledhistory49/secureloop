@@ -1,0 +1,14 @@
+id: dast-auto-t1068-1784753498
+info:
+  name: Auto-Generated DAST Rule for T1068
+  author: SecureLoop Closed Feedback Synthesizer
+  severity: high
+
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}/api/users/usr-002/role"
+    matchers:
+      - type: status
+        status:
+          - 200

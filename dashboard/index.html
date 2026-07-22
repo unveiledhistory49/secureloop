@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SecureLoop — Executive Security Operations & Engineering Command Center</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="M12 8v4"/>
+            <path d="M12 16h.01"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1>SECURE<span>LOOP</span></h1>
+          <span class="version">v1.0.0-ENTERPRISE</span>
+        </div>
+      </div>
+
+      <nav class="nav-menu">
+        <a href="#overview" class="nav-item active">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Overview
+        </a>
+        <a href="#mitre" class="nav-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          ATT&CK Matrix
+        </a>
+        <a href="#soar" class="nav-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          SOAR & Merkle Log
+        </a>
+        <a href="#feedback" class="nav-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.13 15.57a10 10 0 1 0 4-13.43L2.5 5"/></svg>
+          Feedback Loop
+        </a>
+      </nav>
+
+      <div class="system-status-card">
+        <div class="status-header">
+          <span class="pulse-dot"></span>
+          <span>Target App Security Mode</span>
+        </div>
+        <div class="mode-toggle-group">
+          <button id="btn-vulnerable" class="mode-btn active-vun">VULNERABLE</button>
+          <button id="btn-hardened" class="mode-btn">HARDENED</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Top Banner -->
+      <header class="top-header">
+        <div class="header-title">
+          <h2>Security Operations Center & Closed Feedback Loop</h2>
+          <p>Real-Time Telemetry, Dynamic SOAR Response & Cryptographic Merkle Hash Audit Trail</p>
+        </div>
+        <div class="header-actions">
+          <button id="btn-run-attack" class="action-btn attack-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            Trigger Adversary Emulation
+          </button>
+        </div>
+      </header>
+
+      <!-- Metric Cards Grid -->
+      <section class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-icon alert-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+          <div class="metric-info">
+            <span class="metric-label">Active Detections</span>
+            <h3 id="stat-active-alerts">0</h3>
+            <span class="metric-sub">ATT&CK Technique Matches</span>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon latency-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div class="metric-info">
+            <span class="metric-label">Mean Time to Detect (MTTD)</span>
+            <h3 id="stat-mttd">0.42 <small>ms</small></h3>
+            <span class="metric-sub">Real-Time Ingestion Speed</span>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon merkle-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-2-2l2 2m2 16l-2-2m-2 2l2-2M3 2l2 2m2-2L5 4m-2 16l2-2m2 2l-2-2M12 3v18M3 12h18"/></svg>
+          </div>
+          <div class="metric-info">
+            <span class="metric-label">Merkle Audit Integrity</span>
+            <h3 id="stat-merkle-status" class="status-pass">VERIFIED</h3>
+            <span class="metric-sub">HMAC-SHA256 Hash Chain</span>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon cycle-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+          </div>
+          <div class="metric-info">
+            <span class="metric-label">Feedback Cycles Closed</span>
+            <h3 id="stat-feedback-cycles">0</h3>
+            <span class="metric-sub">Auto Semgrep & DAST Rules</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- MITRE ATT&CK Matrix Section -->
+      <section id="mitre" class="dashboard-section">
+        <div class="section-header">
+          <h3>MITRE ATT&CK Coverage & Live Heatmap</h3>
+          <span class="badge">7 Active Detection Rules</span>
+        </div>
+        <div class="attack-matrix-grid">
+          <div class="attack-card" id="card-T1190">
+            <div class="attack-id">T1190</div>
+            <div class="attack-title">Exploit Public-Facing App</div>
+            <div class="attack-tactic">Initial Access</div>
+            <div class="attack-vuln">SQL Injection (/api/search)</div>
+            <div class="attack-status"><span class="badge-status">Armed</span></div>
+          </div>
+          <div class="attack-card" id="card-T1059.004">
+            <div class="attack-id">T1059.004</div>
+            <div class="attack-title">Unix Shell Command Exec</div>
+            <div class="attack-tactic">Execution</div>
+            <div class="attack-vuln">Command Injection (/api/export)</div>
+            <div class="attack-status"><span class="badge-status">Armed</span></div>
+          </div>
+          <div class="attack-card" id="card-T1110.001">
+            <div class="attack-id">T1110.001</div>
+            <div class="attack-title">Password Spraying</div>
+            <div class="attack-tactic">Credential Access</div>
+            <div class="attack-vuln">Brute Force (/api/auth/login)</div>
+            <div class="attack-status"><span class="badge-status">Armed</span></div>
+          </div>
+          <div class="attack-card" id="card-T1078.003">
+            <div class="attack-id">T1078.003</div>
+            <div class="attack-title">Valid Accounts (JWT Forgery)</div>
+            <div class="attack-tactic">Initial Access</div>
+            <div class="attack-vuln">JWT Alg=None Confusion</div>
+            <div class="attack-status"><span class="badge-status">Armed</span></div>
+          </div>
+          <div class="attack-card" id="card-T1068">
+            <div class="attack-id">T1068</div>
+            <div class="attack-title">Exploitation for PrivEsc</div>
+            <div class="attack-tactic">Privilege Escalation</div>
+            <div class="attack-vuln">IDOR Role Elevation (/api/users)</div>
+            <div class="attack-status"><span class="badge-status">Armed</span></div>
+          </div>
+          <div class="attack-card" id="card-T1552.001">
+            <div class="attack-id">T1552.001</div>
+            <div class="attack-title">Unsecured Credentials</div>
+            <div class="attack-tactic">Credential Access</div>
+            <div class="attack-vuln">Debug Config Leak (/api/debug)</div>
+            <div class="attack-status"><span class="badge-status">Armed</span></div>
+          </div>
+          <div class="attack-card" id="card-T1041">
+            <div class="attack-id">T1041</div>
+            <div class="attack-title">Exfiltration / SSRF</div>
+            <div class="attack-tactic">Exfiltration</div>
+            <div class="attack-vuln">SSRF Metadata Lookup</div>
+            <div class="attack-status"><span class="badge-status">Armed</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Two Column Layout: Real-Time Alerts & Cryptographic Merkle Log -->
+      <div class="columns-grid">
+        <!-- Live Alerts Feed -->
+        <section id="overview" class="dashboard-card">
+          <div class="card-header">
+            <h3>Live Threat Detection Stream</h3>
+            <span class="refresh-indicator">Auto-Refreshing (1s)</span>
+          </div>
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>Technique</th>
+                  <th>Severity</th>
+                  <th>Evidence</th>
+                  <th>MTTD</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="alerts-table-body">
+                <tr>
+                  <td colspan="6" class="empty-state">No threat alerts generated yet. Trigger adversary emulation to simulate attacks.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Cryptographic Merkle Hash Audit Log -->
+        <section id="soar" class="dashboard-card">
+          <div class="card-header">
+            <h3>SOAR & Merkle Audit Trail</h3>
+            <span class="shield-badge">HMAC-SHA256 Hash Chained</span>
+          </div>
+          <div class="table-wrapper">
+            <table class="data-table code-font">
+              <thead>
+                <tr>
+                  <th>Index</th>
+                  <th>Action</th>
+                  <th>Details</th>
+                  <th>Current HMAC Hash</th>
+                </tr>
+              </thead>
+              <tbody id="merkle-table-body">
+                <tr>
+                  <td colspan="4" class="empty-state">Merkle audit log initialized. Awaiting SOAR automated actions.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <!-- Closed Feedback Loop Section -->
+      <section id="feedback" class="dashboard-card">
+        <div class="card-header">
+          <h3>Closed Feedback Loop — Auto-Synthesized CI Gates</h3>
+          <span class="badge loop-badge">Shift-Right ➔ Shift-Left Automation</span>
+        </div>
+        <div class="feedback-grid">
+          <div class="feedback-info">
+            <h4>Synthesized Semgrep Static Rules (.yml)</h4>
+            <pre><code id="code-semgrep"># Generated dynamically when production attack detected...</code></pre>
+          </div>
+          <div class="feedback-info">
+            <h4>Synthesized Nuclei DAST Templates (.yaml)</h4>
+            <pre><code id="code-nuclei"># Generated dynamically when production attack detected...</code></pre>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

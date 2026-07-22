@@ -1,0 +1,15 @@
+rules:
+- id: auto-feedback-t1068-1784753498
+  languages:
+  - typescript
+  - javascript
+  message: 'AUTO-FEEDBACK-RULE: Closed loop rule generated from production alert T1068:
+    User alice (USER) changed role of target user usr-002 to ADMIN'
+  metadata:
+    generated_by: SecureLoop Closed Feedback Synthesizer
+    mitre: T1068
+  patterns:
+  - pattern-either:
+    - pattern: $REQ.query
+    - pattern: $REQ.body
+  severity: ERROR

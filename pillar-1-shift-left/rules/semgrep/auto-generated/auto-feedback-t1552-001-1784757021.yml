@@ -1,0 +1,15 @@
+rules:
+- id: auto-feedback-t1552-001-1784757021
+  languages:
+  - typescript
+  - javascript
+  message: 'AUTO-FEEDBACK-RULE: Closed loop rule generated from production alert T1552.001:
+    Access to /api/debug/config exposed secrets'
+  metadata:
+    generated_by: SecureLoop Closed Feedback Synthesizer
+    mitre: T1552.001
+  patterns:
+  - pattern-either:
+    - pattern: $REQ.query
+    - pattern: $REQ.body
+  severity: ERROR

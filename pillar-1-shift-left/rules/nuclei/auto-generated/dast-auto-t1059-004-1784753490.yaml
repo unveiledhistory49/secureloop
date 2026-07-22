@@ -1,0 +1,14 @@
+id: dast-auto-t1059-004-1784753490
+info:
+  name: Auto-Generated DAST Rule for T1059.004
+  author: SecureLoop Closed Feedback Synthesizer
+  severity: high
+
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}/api/export"
+    matchers:
+      - type: status
+        status:
+          - 200

@@ -1,0 +1,45 @@
+rules:
+  - id: secureloop-sqli-concat
+    patterns:
+      - pattern-either:
+          - pattern: $DB.all(`... ${$QUERY} ...`, ...)
+          - pattern: $DB.run(`... ${$QUERY} ...`, ...)
+          - pattern: $DB.get(`... ${$QUERY} ...`, ...)
+    message: "SECURELOOP-RULE-001: Unsanitized SQL query string concatenation detected (T1190). Use parameterized queries."
+    languages: [typescript, javascript]
+    severity: ERROR
+    metadata:
+      cve: CVE-2024-SQLI-GENERIC
+      mitre: T1190
+
+  - id: secureloop-command-injection
+    patterns:
+      - pattern-either:
+          - pattern: exec(`... ${$CMD} ...`, ...)
+          - pattern: execSync(`... ${$CMD} ...`, ...)
+    message: "SECURELOOP-RULE-002: Unsanitized OS command execution detected (T1059.004). Use execFile or sanitize input."
+    languages: [typescript, javascript]
+    severity: ERROR
+    metadata:
+      mitre: T1059.004
+
+  - id: secureloop-jwt-none-alg
+    patterns:
+      - pattern: |
+          if ($HEADER.alg === 'none') { ... }
+    message: "SECURELOOP-RULE-003: Insecure JWT algorithm 'none' allowed (T1078). Require strict signature verification with HS256/RS256."
+    languages: [typescript, javascript]
+    severity: ERROR
+    metadata:
+      mitre: T1078
+
+  - id: secureloop-ssrf-unvalidated-fetch
+    patterns:
+      - pattern-either:
+          - pattern: http.get($URL, ...)
+          - pattern: https.get($URL, ...)
+    message: "SECURELOOP-RULE-004: Potential Server-Side Request Forgery (SSRF) via raw URL fetch (T1041). Validate destination subnets."
+    languages: [typescript, javascript]
+    severity: WARNING
+    metadata:
+      mitre: T1041
