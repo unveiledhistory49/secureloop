@@ -1,9 +1,5 @@
 # 🛡️ SecureLoop — Closed-Loop Security Engineering Platform
 
-> **Author**: Staff Security Engineer (Ex-Apple, Google, US Government)  
-> **Repository Location**: `/root/secureloop`  
-> **Master Architecture Specification**: [secureloop-master-architecture.md](file:///root/.gemini/antigravity-cli/brain/a4b8197a-3a00-42da-a6fd-86bf6294b110/secureloop-master-architecture.md)
-
 ---
 
 ## 📌 The Pitch
