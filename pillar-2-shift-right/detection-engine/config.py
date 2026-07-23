@@ -7,8 +7,8 @@ TELEMETRY_LOG_PATH = os.environ.get(
     os.path.join(WORKSPACE_DIR, "pillar-2-shift-right/logs/app-telemetry.json")
 )
 
-MERKLE_AUDIT_LOG_PATH = os.environ.get(
-    "MERKLE_AUDIT_LOG_PATH",
+HASH_CHAIN_AUDIT_LOG_PATH = os.environ.get(
+    "HASH_CHAIN_AUDIT_LOG_PATH",
     os.path.join(WORKSPACE_DIR, "pillar-2-shift-right/logs/merkle-audit-trail.json")
 )
 
@@ -19,4 +19,5 @@ ALERTS_LOG_PATH = os.environ.get(
 
 TARGET_APP_URL = os.environ.get("TARGET_APP_URL", "http://localhost:8080")
 
-HMAC_KEY = b"secureloop-merkle-integrity-secret-key-2026"
+# HMAC Secret Key pulled dynamically from environment variable
+HMAC_KEY = os.environ.get("HMAC_KEY", "secureloop-hmac-integrity-secret-key-2026").encode('utf-8')

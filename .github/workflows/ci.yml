@@ -1,0 +1,36 @@
+name: SecureLoop Shift-Left Security Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  security-gate:
+    name: Shift-Left Security Gate Execution
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Target App Dependencies & Build
+        run: |
+          cd apps/target-app
+          npm install
+          npm run build
+
+      - name: Run Integration Tests
+        run: |
+          cd apps/target-app
+          npm test
+
+      - name: Run Shift-Left Security Pipeline (SAST, Secrets, OPA Policy)
+        run: |
+          bash pillar-1-shift-left/run-shift-left.sh

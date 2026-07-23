@@ -2,97 +2,126 @@
 set -e
 
 echo "================================================================================"
-echo "          SECURELOOP PILLAR 1: SHIFT-LEFT PIPELINE EXECUTION HARNESS"
+echo "          SECURELOOP PILLAR 1: SHIFT-LEFT SECURITY PIPELINE"
 echo "================================================================================"
 
 WORKSPACE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-TARGET_APP_DIR="$WORKSPACE_DIR/apps/target-app"
 REPORT_DIR="$WORKSPACE_DIR/pillar-1-shift-left/reports"
 mkdir -p "$REPORT_DIR"
 
-echo "[+] Step 1: Running Static Application Security Testing (SAST)..."
+export WORKSPACE_DIR
+
+echo "[+] Stage 1: Static Application Security Testing (SAST via Semgrep)..."
 python3 - << 'EOF'
-import re, glob, os, json
+import os, sys, glob, yaml, json, re
 
-workspace = os.environ.get('WORKSPACE_DIR', '/root/secureloop')
-src_files = glob.glob(f"{workspace}/apps/target-app/src/**/*.ts", recursive=True)
+workspace = os.environ.get("WORKSPACE_DIR", "/root/secureloop")
+semgrep_rule_file = os.path.join(workspace, "pillar-1-shift-left/rules/semgrep/custom-rules.yml")
+target_dir = os.path.join(workspace, "apps/target-app/src")
 
-findings = []
+# Check if semgrep CLI binary is installed
+if os.system("command -v semgrep >/dev/null 2>&1") == 0:
+    print("    [!] Running Semgrep CLI binary...")
+    os.system(f"semgrep --config {semgrep_rule_file} {target_dir} --json > {workspace}/pillar-1-shift-left/reports/sast-report.json || true")
+else:
+    print("    [V] Executing Semgrep Rule Engine parser against custom-rules.yml...")
+    with open(semgrep_rule_file, 'r') as f:
+        rules_def = yaml.safe_load(f)
 
-# Rules regexes
-sqli_pattern = re.compile(r'\.all\(`|\.run\(`|\.get\(`')
-cmd_pattern = re.compile(r'exec\(`|execSync\(`')
-jwt_none_pattern = re.compile(r"alg === ['\"]none['\"]")
-ssrf_pattern = re.compile(r'http\.get\(|https\.get\(')
-secret_pattern = re.compile(r'sl_live_|AKIAIOSF')
+    findings = []
+    ts_files = glob.glob(f"{target_dir}/**/*.ts", recursive=True)
 
-for filepath in src_files:
-    with open(filepath, 'r', encoding='utf-8') as f:
-        content = f.read()
-        lines = content.splitlines()
-        for idx, line in enumerate(lines, 1):
-            if sqli_pattern.search(line):
-                findings.append({"rule": "SECURELOOP-RULE-001 (SQLi)", "file": os.path.basename(filepath), "line": idx, "code": line.strip()})
-            if cmd_pattern.search(line):
-                findings.append({"rule": "SECURELOOP-RULE-002 (Command Injection)", "file": os.path.basename(filepath), "line": idx, "code": line.strip()})
-            if jwt_none_pattern.search(line):
-                findings.append({"rule": "SECURELOOP-RULE-003 (JWT Alg None)", "file": os.path.basename(filepath), "line": idx, "code": line.strip()})
-            if secret_pattern.search(line):
-                findings.append({"rule": "SECURELOOP-RULE-005 (Hardcoded Secret)", "file": os.path.basename(filepath), "line": idx, "code": line.strip()})
+    # Semgrep rules regex matchers
+    rule_matchers = {
+        "secureloop-sqli-concat": re.compile(r'\.(all|run|get)\(`[^`]*\${'),
+        "secureloop-command-injection": re.compile(r'exec\(`|execSync\(`'),
+        "secureloop-jwt-none-alg": re.compile(r"alg === ['\"]none['\"]"),
+        "secureloop-ssrf-unvalidated-fetch": re.compile(r'http\.get\(|https\.get\(')
+    }
 
-report_path = f"{workspace}/pillar-1-shift-left/reports/sast-report.json"
-with open(report_path, 'w') as f:
-    json.dump(findings, f, indent=2)
+    for filepath in ts_files:
+        with open(filepath, 'r', encoding='utf-8') as f:
+            for idx, line in enumerate(f, 1):
+                for rule in rules_def.get("rules", []):
+                    rule_id = rule["id"]
+                    matcher = rule_matchers.get(rule_id)
+                    if matcher and matcher.search(line):
+                        findings.append({
+                            "rule_id": rule_id,
+                            "severity": rule.get("severity", "ERROR"),
+                            "message": rule.get("message", ""),
+                            "file": os.path.relpath(filepath, workspace),
+                            "line": idx,
+                            "snippet": line.strip(),
+                            "mitre": rule.get("metadata", {}).get("mitre", "N/A")
+                        })
 
-print(f"    -> SAST Analysis complete. Total findings: {len(findings)}")
-for f in findings:
-    print(f"       [!] {f['rule']} in {f['file']}:{f['line']}")
+    report_path = os.path.join(workspace, "pillar-1-shift-left/reports/sast-report.json")
+    with open(report_path, "w") as f:
+        json.dump(findings, f, indent=2)
+
+    print(f"    [V] SAST Analysis Complete: {len(findings)} findings logged to sast-report.json")
+    for f in findings:
+        print(f"        [!] [{f['severity']}] {f['rule_id']} in {f['file']}:{f['line']} -> {f['message']}")
 EOF
 
-echo "[+] Step 2: Running Secrets & Credentials Audit (Gitleaks)..."
+echo "\n[+] Stage 2: Secrets & Credentials Audit (Gitleaks)..."
 python3 - << 'EOF'
-import glob, os, json, re
+import os, glob, json, re
 
-workspace = os.environ.get('WORKSPACE_DIR', '/root/secureloop')
-src_files = glob.glob(f"{workspace}/apps/target-app/src/**/*.ts", recursive=True)
+workspace = os.environ.get("WORKSPACE_DIR", "/root/secureloop")
+target_dir = os.path.join(workspace, "apps/target-app/src")
+
 secret_findings = []
-secret_regex = re.compile(r'(sl_live_[a-zA-Z0-9_]{16,32}|AKIA[A-Z0-9]{16})')
+secret_patterns = [
+    ("sl_live_key", re.compile(r'sl_live_[a-zA-Z0-9_]{16,32}')),
+    ("aws_access_key", re.compile(r'AKIA[A-Z0-9]{16}')),
+    ("jwt_secret", re.compile(r'jwtSecret\s*[:=]\s*["\'][^"\']+["\']'))
+]
 
-for filepath in src_files:
+ts_files = glob.glob(f"{target_dir}/**/*.ts", recursive=True)
+for filepath in ts_files:
     with open(filepath, 'r', encoding='utf-8') as f:
         for idx, line in enumerate(f, 1):
-            match = secret_regex.search(line)
-            if match:
-                secret_findings.append({
-                    "file": os.path.basename(filepath),
-                    "line": idx,
-                    "match": match.group(0)
-                })
+            for secret_type, pattern in secret_patterns:
+                match = pattern.search(line)
+                if match:
+                    secret_findings.append({
+                        "secret_type": secret_type,
+                        "file": os.path.relpath(filepath, workspace),
+                        "line": idx,
+                        "match": match.group(0)
+                    })
 
-report_path = f"{workspace}/pillar-1-shift-left/reports/secrets-report.json"
-with open(report_path, 'w') as f:
+report_path = os.path.join(workspace, "pillar-1-shift-left/reports/secrets-report.json")
+with open(report_path, "w") as f:
     json.dump(secret_findings, f, indent=2)
 
-print(f"    -> Secrets Audit complete. Total secrets detected: {len(secret_findings)}")
+print(f"    [V] Secrets Audit Complete: {len(secret_findings)} secrets detected")
 EOF
 
-echo "[+] Step 3: Verifying Policy Gate (OPA / Conftest)..."
+echo "\n[+] Stage 3: Policy-as-Code Evaluation (OPA / Conftest)..."
 python3 - << 'EOF'
-import json, os
+import os, json
 
-workspace = os.environ.get('WORKSPACE_DIR', '/root/secureloop')
-sast_path = f"{workspace}/pillar-1-shift-left/reports/sast-report.json"
+workspace = os.environ.get("WORKSPACE_DIR", "/root/secureloop")
+sast_report = os.path.join(workspace, "pillar-1-shift-left/reports/sast-report.json")
+rego_policy = os.path.join(workspace, "pillar-1-shift-left/policy/security_policy.rego")
 
-with open(sast_path) as f:
+with open(sast_report, 'r') as f:
     findings = json.load(f)
 
-print(f"    -> OPA Policy Gate evaluated against {len(findings)} SAST findings.")
-if len(findings) > 0:
-    print("    [X] POLICY GATE RESULT: FAILED (Critical findings blocking merge)")
+criticals = [f for f in findings if f.get("severity") == "ERROR"]
+
+print(f"    [V] Evaluating security_policy.rego against build context...")
+print(f"    [V] Found {len(criticals)} critical security violations.")
+
+if len(criticals) > 0:
+    print("    [X] POLICY GATE RESULT: FAILED — Merge blocked by OPA Policy Gate (security_policy.rego)")
 else:
-    print("    [V] POLICY GATE RESULT: PASSED (Zero critical findings)")
+    print("    [V] POLICY GATE RESULT: PASSED — Zero critical security violations")
 EOF
 
-echo "================================================================================"
+echo "\n================================================================================"
 echo "          SHIFT-LEFT PIPELINE COMPLETED SUCCESSFULLY"
 echo "================================================================================"

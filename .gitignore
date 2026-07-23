@@ -1,6 +1,18 @@
+# Dependencies
 node_modules/
+__pycache__/
+*.pyc
+
+# Build outputs
 dist/
+
+# Databases & local state
 *.db
+secureloop.db
+
+# System & log files
 .DS_Store
 *.log
-secureloop-architecture.md
+
+# Environment variables
+.env
