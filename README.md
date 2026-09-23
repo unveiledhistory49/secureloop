@@ -1,14 +1,5 @@
 # 🛡️ SecureLoop — Closed-Loop Security Engineering Platform
 
-<<<<<<< HEAD
-=======
-> **Author**: Staff Security Engineer (Ex-Apple, Google, US Government)  
-> **Repository Location**: `/root/secureloop`  
-> **GitHub Repository**: [https://github.com/unveiledhistory49/secureloop](https://github.com/unveiledhistory49/secureloop)
-
->>>>>>> aa6b50e (refactor: complete 10-point senior code review fixes (pure SIEM inference, pytest suite, GitHub Actions CI, HMAC env key, confusion matrix benchmark))
----
-
 ## 📌 Executive Overview
 
 Most security engineering projects operate in silos: AppSec scanners run once in CI, while SOC teams write static SIEM alerts in production. **SecureLoop** unifies these domains by building a continuous, automated **Closed Feedback Loop Platform**.
